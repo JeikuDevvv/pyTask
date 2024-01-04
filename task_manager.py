@@ -14,7 +14,7 @@ class TaskManagerApp:
         # Set the Ubuntu font
         font_style = ('Ubuntu', 12)
 
-        # Set Twitter-like color scheme
+        # Style
         root.option_add('*TButton*highlightBackground', '#1DA1F2')
         root.option_add('*TButton*highlightColor', '#1DA1F2')
         root.option_add('*TButton*background', '#1DA1F2')

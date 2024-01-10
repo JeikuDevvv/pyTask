@@ -11,10 +11,8 @@ class TaskManagerApp:
         self.root = root
         self.root.title("Task Manager")
 
-        # Set the Ubuntu font
         font_style = ('Ubuntu', 12)
 
-        # Style
         root.option_add('*TButton*highlightBackground', '#1DA1F2')
         root.option_add('*TButton*highlightColor', '#1DA1F2')
         root.option_add('*TButton*background', '#1DA1F2')
@@ -29,24 +27,19 @@ class TaskManagerApp:
         root.option_add('*TEntry*font', font_style)
         root.option_add('*TEntry*background', 'white')
 
-        self.tasks = self.load_tasks()  # Load tasks from file
+        self.tasks = self.load_tasks()
         self.startup_var = tk.BooleanVar()
-        self.startup_var.set(self.load_startup_setting()
-                             )  # Load startup setting
+        self.startup_var.set(self.load_startup_setting())
 
-        # Task Entry
         self.task_entry = ttk.Entry(root, font=font_style, width=30)
         self.task_entry.grid(row=0, column=0, padx=10, pady=10)
 
-        # Add Task Button
         add_button = ttk.Button(root, text="Add Task", command=self.add_task)
         add_button.grid(row=0, column=1, padx=10, pady=10)
 
-        # Task List
         self.task_frame = ttk.Frame(root)
         self.task_frame.grid(row=1, column=0, columnspan=3, padx=10, pady=10)
 
-        # Settings Dropdown
         settings_var = tk.StringVar()
         settings_var.set("Settings")
         settings_dropdown = ttk.Combobox(
@@ -57,7 +50,6 @@ class TaskManagerApp:
         settings_dropdown.bind(
             "<<ComboboxSelected>>", lambda event: self.handle_settings_selection(event))
 
-        # Load tasks into the UI
         self.load_tasks_into_ui()
 
     def add_task(self):
@@ -84,7 +76,6 @@ class TaskManagerApp:
             self.tasks.append((task_text, status_var.get()))
             self.update_task_list()
 
-            # Save tasks to file
             self.save_tasks()
 
     def delete_task(self, task_frame):
@@ -92,7 +83,6 @@ class TaskManagerApp:
         self.tasks = [(task, status)
                       for task, status in self.tasks if task_frame != task]
 
-        # Save tasks to file after deletion
         self.save_tasks()
 
     def update_task_list(self):
@@ -116,12 +106,10 @@ class TaskManagerApp:
         if self.startup_var.get():
             messagebox.showinfo("Startup Setting",
                                 "Task Manager will start on startup.")
-            # Create a shortcut in the user's startup folder
             try:
                 import ctypes
                 import winreg
 
-                # Check for admin privileges
                 if not ctypes.windll.shell32.IsUserAnAdmin():
                     ctypes.windll.shell32.ShellExecuteW(
                         None, "runas", sys.executable, " ".join(
@@ -129,13 +117,11 @@ class TaskManagerApp:
                     )
                     sys.exit()
 
-                # Create the registry key to run the script on startup
                 key = r"Software\Microsoft\Windows\CurrentVersion\Run"
                 with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key, 0, winreg.KEY_SET_VALUE) as registry_key:
                     winreg.SetValueEx(registry_key, "TaskManager",
                                       0, winreg.REG_SZ, sys.executable)
 
-                # Create a shortcut in the user's startup folder
                 import pythoncom
                 from win32com.client import Dispatch
 
@@ -152,7 +138,6 @@ class TaskManagerApp:
         else:
             messagebox.showinfo("Startup Setting",
                                 "Task Manager will not start on startup.")
-            # Remove the registry key if it exists
             try:
                 key = r"Software\Microsoft\Windows\CurrentVersion\Run"
                 with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key, 0, winreg.KEY_SET_VALUE) as registry_key:
@@ -160,7 +145,6 @@ class TaskManagerApp:
             except FileNotFoundError:
                 pass
 
-            # Remove the shortcut if it exists
             if os.path.exists(shortcut_path):
                 try:
                     os.remove(shortcut_path)
@@ -168,7 +152,6 @@ class TaskManagerApp:
                     messagebox.showerror(
                         "Error", f"Failed to remove shortcut: {e}")
 
-        # Save startup setting to file
         self.save_startup_setting()
 
     def reset_tasks(self):
@@ -183,7 +166,6 @@ class TaskManagerApp:
             "Reset Settings", "Are you sure you want to reset all settings?")
         if confirmed:
             self.startup_var.set(False)
-            # Save startup setting to file
             self.save_startup_setting()
 
     def get_current_date(self):
@@ -250,7 +232,6 @@ class TaskManagerApp:
             if task == task_text:
                 self.tasks[i] = (task, status)
 
-        # Save tasks to file after updating status
         self.save_tasks()
 
 
